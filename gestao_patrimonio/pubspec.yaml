@@ -33,7 +33,7 @@ dependencies:
   barcode_scan2: ^4.0.0
   google_maps_flutter: ^2.1.5
   geolocator: ^8.2.0
-  excel: ^2.0.7
+  excel: ^2.0.1
   path_provider: ^2.0.8
   image_picker: ^0.8.5+3
 

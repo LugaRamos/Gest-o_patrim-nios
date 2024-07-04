@@ -19,7 +19,7 @@ class _MapaScreenState extends State<MapaScreen> {
   void _addMarkers() {
     setState(() {
       _markers.add(Marker(
-        markerId: MarkerId('patrimonio1'),
+        markerId: MarkerId('patrimonio'),
         position: LatLng(-23.5505, -46.6333),
         infoWindow: InfoWindow(
           title: 'Patrimônio 1',

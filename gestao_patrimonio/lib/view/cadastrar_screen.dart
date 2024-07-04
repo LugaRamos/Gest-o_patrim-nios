@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:excel/excel.dart';
 import 'dart:io';
 
 class CadastrarScreen extends StatefulWidget {
@@ -40,16 +41,44 @@ class _CadastrarScreenState extends State<CadastrarScreen> {
     });
   }
 
-  void _submitForm() {
-    if (_formKey.currentState?.validate() == true) {
-      _formKey.currentState?.save();
-      // Lógica para salvar os dados no Excel ou base de dados futura
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Patrimônio cadastrado com sucesso!')),
-      );
-      Navigator.pop(context);
-    }
+void _submitForm() async {
+  if (_formKey.currentState?.validate() == true) {
+    _formKey.currentState?.save();
+
+    // Crie um novo objeto Excel
+    var excel = Excel.createExcel();
+
+    // Adicione uma nova planilha para os patrimônios
+    Sheet sheetObject = excel['Patrimonios'];
+
+    // Obtenha os dados do formulário
+    String nome = _nomeController.text;
+    int quantidade = int.parse(_quantidadeController.text);
+    String setor = _setorController.text;
+    double latitude = double.parse(_latitudeController.text);
+    double longitude = double.parse(_longitudeController.text);
+    String descricao = _descricaoController.text;
+
+    // Adicione os dados à planilha
+    List<String> headers = ['Nome', 'Quantidade', 'Setor', 'Latitude', 'Longitude', 'Descrição'];
+    sheetObject.appendRow(headers);
+    sheetObject.appendRow([nome, quantidade.toString(), setor, latitude.toString(), longitude.toString(), descricao]);
+
+    // Salve o arquivo Excel no armazenamento local
+    var directory = await getApplicationDocumentsDirectory();
+    var filePath = '${directory.path}/dados.xlsx';
+    File(filePath).writeAsBytesSync(await excel.encode());
+
+    // Exiba uma mensagem de sucesso
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Patrimônio cadastrado com sucesso!')),
+    );
+
+    // Feche a tela de cadastro
+    Navigator.pop(context);
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
